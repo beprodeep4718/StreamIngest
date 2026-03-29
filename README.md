@@ -279,3 +279,8 @@ npm run dev
 **Beprodeep Das**
 
 ---
+
+| | | |
+|---|---|---|
+|<img src="docs/img2.png" width="100%">|<img src="docs/img3.png" width="100%">|<img src="docs/img4.png" width="100%">|
+|<img src="docs/img5.png" width="100%">|<img src="docs/img6.png" width="100%">| |

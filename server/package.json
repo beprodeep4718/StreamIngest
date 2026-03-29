@@ -4,10 +4,10 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "tsx src/server.ts",
-    "dev": "tsx watch src/server.ts",
-    "worker": "tsx watch src/workers/ingestionWorker.ts"
+    "build": "tsc --outDir dist",
+    "start": "node dist/server.js",
+    "worker": "node dist/workers/ingestionWorker.js",
+    "dev": "tsx watch src/server.ts"
   },
   "keywords": [],
   "author": "",
@@ -31,6 +31,7 @@
     "busboy": "^1.6.0",
     "cors": "^2.8.6",
     "csv-parser": "^3.2.0",
+    "dotenv": "^17.3.1",
     "express": "^5.2.1",
     "express-rate-limit": "^8.3.1",
     "ioredis": "^5.10.0",

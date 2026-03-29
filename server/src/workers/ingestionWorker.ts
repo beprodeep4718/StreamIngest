@@ -1,3 +1,4 @@
+import "../config/env"
 import { Worker, type Job, type ConnectionOptions } from "bullmq";
 import { connectDB } from "../config/db";
 import { User } from "../models/User";
@@ -13,7 +14,6 @@ const BATCH_KEY = (jobId: string, batchId: string) =>
 
 const startWorker = async () => {
   await connectDB();
-
   new Worker<CSVBatchJob>(
     "csv-ingestion",
     async (job: Job<CSVBatchJob>) => {
@@ -77,13 +77,14 @@ const startWorker = async () => {
         await redis.hincrby(progressKey, "invalid", invalidRows.length);
         await redis.expire(progressKey, 60 * 60);
 
-        const [totalRaw, processedRaw, validRaw, invalidRaw] = await redis.hmget(
-          progressKey,
-          "total",
-          "processed",
-          "valid",
-          "invalid"
-        );
+        const [totalRaw, processedRaw, validRaw, invalidRaw] =
+          await redis.hmget(
+            progressKey,
+            "total",
+            "processed",
+            "valid",
+            "invalid",
+          );
 
         const total = Number(totalRaw ?? "0");
         const processed = Number(processedRaw ?? "0");
@@ -91,9 +92,7 @@ const startWorker = async () => {
         const invalid = Number(invalidRaw ?? "0");
 
         const percentage =
-          total > 0
-            ? Math.min(100, Math.floor((processed / total) * 100))
-            : 0;
+          total > 0 ? Math.min(100, Math.floor((processed / total) * 100)) : 0;
 
         await job.updateProgress({
           processed,
@@ -103,30 +102,32 @@ const startWorker = async () => {
           percentage,
         });
 
-        console.log(
-          `✅ Batch processed: ${rows.length} | Total: ${processed}`
-        );
+        console.log(`✅ Batch processed: ${rows.length} | Total: ${processed}`);
 
         // 🔥 Check completion
         const completedBatches = await redis.incr(
-          `job:${jobId}:completedBatches`
+          `job:${jobId}:completedBatches`,
         );
         const totalBatches = Number(
-          (await redis.get(`job:${jobId}:totalBatches`)) ?? "0"
+          (await redis.get(`job:${jobId}:totalBatches`)) ?? "0",
         );
 
         if (totalBatches > 0 && completedBatches >= totalBatches) {
           await redis.hset(progressKey, "status", "completed");
           await redis.expire(progressKey, 60 * 60);
 
-          const [finalTotalRaw, finalProcessedRaw, finalValidRaw, finalInvalidRaw] =
-            await redis.hmget(
-              progressKey,
-              "total",
-              "processed",
-              "valid",
-              "invalid"
-            );
+          const [
+            finalTotalRaw,
+            finalProcessedRaw,
+            finalValidRaw,
+            finalInvalidRaw,
+          ] = await redis.hmget(
+            progressKey,
+            "total",
+            "processed",
+            "valid",
+            "invalid",
+          );
 
           const finalTotal = Number(finalTotalRaw ?? "0");
           const finalProcessed = Number(finalProcessedRaw ?? "0");
@@ -168,7 +169,7 @@ const startWorker = async () => {
     {
       connection: redis as unknown as ConnectionOptions,
       concurrency: 5,
-    }
+    },
   );
 };
 
