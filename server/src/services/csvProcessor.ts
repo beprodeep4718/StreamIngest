@@ -1,5 +1,5 @@
 import csv from "csv-parser";
-import { ingestionQueue } from "../queues/ingestionQueue.";
+import { ingestionQueue } from "../queues/ingestionQueue.js";
 import { redisConnection as redis } from "../config/redis";
 import { UploadSession } from "../models/UploadSession";
 

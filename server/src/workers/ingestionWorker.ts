@@ -4,7 +4,7 @@ import { connectDB } from "../config/db";
 import { User } from "../models/User";
 import { InvalidRow } from "../models/InvalidRow";
 import { UploadSession } from "../models/UploadSession";
-import { CSVBatchJob } from "../queues/ingestionQueue.";
+import { CSVBatchJob } from "../queues/ingestionQueue.js";
 import { validateRow } from "../utils/validator";
 import { redisConnection as redis } from "../config/redis";
 

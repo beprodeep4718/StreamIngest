@@ -8,37 +8,52 @@ import { uploadLimiter } from "../middlewares/rateLimiter.js";
 const router = express.Router();
 
 router.post("/", uploadLimiter, (req, res) => {
-  const bb = busboy({ headers: req.headers });
+  try {
+    const bb = busboy({ headers: req.headers });
 
-  const jobId = uuidv4();
-  let sessionId: string | null = null;
+    const jobId = uuidv4();
+    let sessionId: string | null = null;
+    let hasError = false;
 
-  bb.on("file", async (name, file, info) => {
-    try {
-      const session = await UploadSession.create({
-        fileName: info.filename,
-        status: "processing",
-        totalRows: 0,
-        validRows: 0,
-        invalidRows: 0,
-      });
+    bb.on("file", async (name, file, info) => {
+      try {
+        const session = await UploadSession.create({
+          fileName: info.filename,
+          status: "processing",
+          totalRows: 0,
+          validRows: 0,
+          invalidRows: 0,
+        });
 
-      sessionId = session._id.toString();
-      processCSVStream(file, jobId, sessionId);
-    } catch (err) {
-      console.error(err);
-    }
-  });
-
-  bb.on("finish", () => {
-    res.json({
-      message: "Streaming started",
-      jobId,
-      sessionId,
+        sessionId = session._id.toString();
+        processCSVStream(file, jobId, sessionId);
+      } catch (err) {
+        console.error("Error creating upload session:", err);
+        hasError = true;
+        res.status(500).json({ error: "Failed to create upload session" });
+      }
     });
-  });
 
-  req.pipe(bb);
+    bb.on("finish", () => {
+      if (!hasError) {
+        res.json({
+          message: "Streaming started",
+          jobId,
+          sessionId,
+        });
+      }
+    });
+
+    bb.on("error", (err) => {
+      console.error("Busboy error:", err);
+      res.status(400).json({ error: "Invalid file upload" });
+    });
+
+    req.pipe(bb);
+  } catch (err) {
+    console.error("Upload route error:", err);
+    res.status(500).json({ error: "Internal server error" });
+  }
 });
 
 export default router;
