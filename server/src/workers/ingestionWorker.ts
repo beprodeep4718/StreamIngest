@@ -1,12 +1,12 @@
-import "../config/env"
+import "../config/env.js"
 import { Worker, type Job, type ConnectionOptions } from "bullmq";
-import { connectDB } from "../config/db";
-import { User } from "../models/User";
-import { InvalidRow } from "../models/InvalidRow";
-import { UploadSession } from "../models/UploadSession";
+import { connectDB } from "../config/db.js";
+import { User } from "../models/User.js";
+import { InvalidRow } from "../models/InvalidRow.js";
+import { UploadSession } from "../models/UploadSession.js";
 import { CSVBatchJob } from "../queues/ingestionQueue.js";
-import { validateRow } from "../utils/validator";
-import { redisConnection as redis } from "../config/redis";
+import { validateRow } from "../utils/validator.js";
+import { redisConnection as redis } from "../config/redis.js";
 
 const PROGRESS_KEY = (jobId: string) => `progress:${jobId}`;
 const BATCH_KEY = (jobId: string, batchId: string) =>

@@ -1,6 +1,6 @@
 import express from "express";
-import { queueEvents } from "../queues/queueEvents";
-import { redisConnection as redis } from "../config/redis";
+import { queueEvents } from "../queues/queueEvents.js";
+import { redisConnection as redis } from "../config/redis.js";
 
 const router = express.Router();
 const PROGRESS_KEY = (jobId: string) => `progress:${jobId}`;

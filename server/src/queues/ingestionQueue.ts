@@ -1,5 +1,5 @@
 import { Queue, type ConnectionOptions } from "bullmq";
-import { redisConnection } from "../config/redis";
+import { redisConnection } from "../config/redis.js";
 
 export interface CSVBatchJob {
   rows: Record<string, string>[];

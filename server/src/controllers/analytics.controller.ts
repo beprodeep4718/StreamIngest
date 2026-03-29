@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
-import { UploadSession } from "../models/UploadSession";
-import { User } from "../models/User";
+import { UploadSession } from "../models/UploadSession.js";
+import { User } from "../models/User.js";
 
 type SessionStatus = "processing" | "completed" | "failed";
 

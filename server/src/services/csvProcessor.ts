@@ -1,7 +1,7 @@
 import csv from "csv-parser";
 import { ingestionQueue } from "../queues/ingestionQueue.js";
-import { redisConnection as redis } from "../config/redis";
-import { UploadSession } from "../models/UploadSession";
+import { redisConnection as redis } from "../config/redis.js";
+import { UploadSession } from "../models/UploadSession.js";
 
 const BATCH_SIZE = 500;
 

@@ -1,5 +1,5 @@
 import { ConnectionOptions, QueueEvents } from "bullmq";
-import { redisConnection } from "../config/redis";
+import { redisConnection } from "../config/redis.js";
 
 // ⚠️ SAME queue name as ingestionQueue
 export const queueEvents = new QueueEvents("csv-ingestion", {
